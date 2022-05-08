@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Mesa SMS App</string>
+    <string name="sample_button_string">Sample Button</string>
 </resources>
