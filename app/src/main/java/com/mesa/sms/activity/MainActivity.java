@@ -46,30 +46,15 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerViewLayoutManager = new LinearLayoutManager(this);
         mRecyclerViewAdapter = new RootMessagesAdapter(homeScreenMessages);
 
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+        mRecyclerView.setLayoutManager(mRecyclerViewLayoutManager);
+
         //Populate screen
         if (shouldRequestForPermissions()) {
             getPermissionToReadSMS();
         } else {
             refreshSmsInbox();
-            mRecyclerView.setAdapter(mRecyclerViewAdapter);
-            mRecyclerView.setLayoutManager(mRecyclerViewLayoutManager);
         }
-
-//        homeScreenMessages = new ArrayList<>();
-//        homeScreenMessages.add(new RootMessageItem(R.drawable.ic_root_message_default_icon,
-//                "This is small",
-//                "The content is also small"));
-//        homeScreenMessages.add(new RootMessageItem(R.drawable.ic_root_message_default_icon,
-//                "This is small but not",
-//                "The content is also small but not very small too."));
-//        homeScreenMessages.add(new RootMessageItem(R.drawable.ic_root_message_default_icon,
-//                "This is small but not so small that",
-//                "The content is also small but not very small too. This can get big some times."));
-//        homeScreenMessages.add(new RootMessageItem(R.drawable.ic_root_message_default_icon,
-//                "This is small but not so small that it's not even visible",
-//                "The content is also small ut not very small too. This can get big some times which is exactly what is happening here."));
-
-
     }
 
     private boolean shouldRequestForPermissions() {
@@ -101,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshSmsInbox() {
+        readMessages();
+        mRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void readMessages() {
         ContentResolver contentResolver = getContentResolver();
         Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
         int indexBody = smsInboxCursor.getColumnIndex("body");
