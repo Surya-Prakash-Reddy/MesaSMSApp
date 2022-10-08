@@ -18,20 +18,6 @@ public class RootMessagesAdapter extends RecyclerView.Adapter<RootMessagesAdapte
 
     final ArrayList<RootMessageItem> mMessageItems;
 
-    public static class RootMessageViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView mMessageIcon;
-        public TextView mMessageTitle;
-        public TextView mMessageContent;
-
-        public RootMessageViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mMessageIcon = itemView.findViewById(R.id.root_message_icon);
-            mMessageTitle = itemView.findViewById(R.id.root_message_title);
-            mMessageContent = itemView.findViewById(R.id.root_message_content);
-        }
-    }
-
     public RootMessagesAdapter(final ArrayList<RootMessageItem> messageItems) {
         this.mMessageItems = messageItems;
     }
@@ -49,7 +35,6 @@ public class RootMessagesAdapter extends RecyclerView.Adapter<RootMessagesAdapte
     public void onBindViewHolder(@NonNull RootMessageViewHolder holder, int position) {
         RootMessageItem currentMessageItem = mMessageItems.get(position);
 
-        holder.mMessageIcon.setImageResource(currentMessageItem.getRootMessageIcon());
         holder.mMessageTitle.setText(currentMessageItem.getTitle());
         holder.mMessageContent.setText(currentMessageItem.getContent());
     }
@@ -57,5 +42,17 @@ public class RootMessagesAdapter extends RecyclerView.Adapter<RootMessagesAdapte
     @Override
     public int getItemCount() {
         return mMessageItems.size();
+    }
+
+    public static class RootMessageViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView mMessageTitle;
+        public TextView mMessageContent;
+
+        public RootMessageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mMessageTitle = itemView.findViewById(R.id.root_message_title);
+            mMessageContent = itemView.findViewById(R.id.root_message_content);
+        }
     }
 }

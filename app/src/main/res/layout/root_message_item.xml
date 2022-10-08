@@ -15,12 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
-        <ImageView
-            android:id="@+id/root_message_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="2dp"/>
-
         <TextView
             android:id="@+id/root_message_title"
             android:layout_width="wrap_content"
@@ -29,8 +23,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/root_message_icon"/>
+            android:layout_alignParentTop="true" />
 
         <TextView
             android:id="@+id/root_message_content"
@@ -38,7 +31,6 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="This is a bigger content displayed in the message. Adding few more lines here to be displayed. adding some more"
-            android:layout_toEndOf="@+id/root_message_icon"
             android:layout_below="@+id/root_message_title"
             android:layout_marginStart="8dp"/>
 

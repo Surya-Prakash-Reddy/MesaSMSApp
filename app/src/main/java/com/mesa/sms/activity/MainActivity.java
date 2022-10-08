@@ -50,11 +50,31 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mRecyclerViewLayoutManager);
 
         //Populate screen
-        if (shouldRequestForPermissions()) {
-            getPermissionToReadSMS();
-        } else {
-            refreshSmsInbox();
-        }
+//        if (shouldRequestForPermissions()) {
+//            getPermissionToReadSMS();
+//        } else {
+//            refreshSmsInbox();
+//        }
+        addTemporarySmsDetails();
+        refreshSmsInbox();
+    }
+
+    private void addTemporarySmsDetails() {
+        String indexAddressString = "IDI 76DCX";
+        String indexBodyString = "This is temporarily launched into space and would be returned";
+
+        RootMessageItem messageItem1 = new RootMessageItem(
+                indexAddressString,
+                indexBodyString);
+        homeScreenMessages.add(messageItem1);
+        RootMessageItem messageItem2 = new RootMessageItem(
+                indexAddressString,
+                indexBodyString);
+        homeScreenMessages.add(messageItem2);
+        RootMessageItem messageItem3 = new RootMessageItem(
+                indexAddressString,
+                indexBodyString);
+        homeScreenMessages.add(messageItem3);
     }
 
     private boolean shouldRequestForPermissions() {
@@ -104,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         do {
             final String indexAddressString = smsInboxCursor.getString(indexAddress);
             final String indexBodyString = smsInboxCursor.getString(indexBody);
-            RootMessageItem messageItem = new RootMessageItem(R.drawable.ic_root_message_default_icon,
+            RootMessageItem messageItem = new RootMessageItem(
                     indexAddressString,
                     indexBodyString);
             homeScreenMessages.add(messageItem);
