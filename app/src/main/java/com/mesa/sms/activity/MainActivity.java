@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 
 import com.mesa.sms.adapter.RootMessagesAdapter;
 import com.mesa.sms.layout.RootMessageItem;
+import com.mesa.sms.listener.RootMessageClickListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,37 +46,32 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.root_messages_list);
         mRecyclerViewLayoutManager = new LinearLayoutManager(this);
-        mRecyclerViewAdapter = new RootMessagesAdapter(homeScreenMessages);
+        mRecyclerViewAdapter = new RootMessagesAdapter(homeScreenMessages, new RootMessageClickListener() {
+            @Override
+            public void onClick() {
+                Log.i(TAG, "onClick: Handling the click of message");
+                handleRootMessageClicked();
+            }
+
+            @Override
+            public void onLongClick() {
+                Log.i(TAG, "onLongClick: Not handling the long click");
+            }
+        });
 
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(mRecyclerViewLayoutManager);
 
         //Populate screen
-//        if (shouldRequestForPermissions()) {
-//            getPermissionToReadSMS();
-//        } else {
-//            refreshSmsInbox();
-//        }
-        addTemporarySmsDetails();
-        refreshSmsInbox();
+        if (shouldRequestForPermissions()) {
+            getPermissionToReadSMS();
+        } else {
+            refreshSmsInbox();
+        }
     }
 
-    private void addTemporarySmsDetails() {
-        String indexAddressString = "IDI 76DCX";
-        String indexBodyString = "This is temporarily launched into space and would be returned";
-
-        RootMessageItem messageItem1 = new RootMessageItem(
-                indexAddressString,
-                indexBodyString);
-        homeScreenMessages.add(messageItem1);
-        RootMessageItem messageItem2 = new RootMessageItem(
-                indexAddressString,
-                indexBodyString);
-        homeScreenMessages.add(messageItem2);
-        RootMessageItem messageItem3 = new RootMessageItem(
-                indexAddressString,
-                indexBodyString);
-        homeScreenMessages.add(messageItem3);
+    private void handleRootMessageClicked() {
+        startActivity(new Intent(this, MessageDetailActivity.class));
     }
 
     private boolean shouldRequestForPermissions() {
@@ -113,21 +110,25 @@ public class MainActivity extends AppCompatActivity {
     private void readMessages() {
         ContentResolver contentResolver = getContentResolver();
         Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
-        int indexBody = smsInboxCursor.getColumnIndex("body");
-        int indexAddress = smsInboxCursor.getColumnIndex("address");
+        try {
+            int indexBody = smsInboxCursor.getColumnIndex("body");
+            int indexAddress = smsInboxCursor.getColumnIndex("address");
 
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) {
-            Log.i(TAG, "refreshSmsInbox: Couldn't get SMS details");
-            return;
+            if (indexBody < 0 || !smsInboxCursor.moveToFirst()) {
+                Log.i(TAG, "refreshSmsInbox: Couldn't get SMS details");
+                return;
+            }
+
+            do {
+                final String indexAddressString = smsInboxCursor.getString(indexAddress);
+                final String indexBodyString = smsInboxCursor.getString(indexBody);
+                RootMessageItem messageItem = new RootMessageItem(
+                        indexAddressString,
+                        indexBodyString);
+                homeScreenMessages.add(messageItem);
+            } while (smsInboxCursor.moveToNext());
+        } finally {
+            smsInboxCursor.close();
         }
-
-        do {
-            final String indexAddressString = smsInboxCursor.getString(indexAddress);
-            final String indexBodyString = smsInboxCursor.getString(indexBody);
-            RootMessageItem messageItem = new RootMessageItem(
-                    indexAddressString,
-                    indexBodyString);
-            homeScreenMessages.add(messageItem);
-        } while (smsInboxCursor.moveToNext());
     }
 }
